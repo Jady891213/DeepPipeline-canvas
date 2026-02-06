@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, HelpCircle } from 'lucide-react';
+import { Sparkles, HelpCircle, Plus, Star } from 'lucide-react';
 import { NodeItem, SidebarStyle } from '../types';
 import { getIcon } from '../constants';
 
@@ -16,22 +16,56 @@ export const NodeCard: React.FC<NodeCardProps> = ({ node, variant }) => {
     orange: 'bg-orange-50 text-orange-600 border-orange-200',
   };
 
+  const tagColorMap: Record<string, string> = {
+    blue: 'bg-blue-100/50 text-blue-700',
+    emerald: 'bg-emerald-100/50 text-emerald-700',
+    purple: 'bg-purple-100/50 text-purple-700',
+    orange: 'bg-orange-100/50 text-orange-700',
+  };
+
   if (variant === SidebarStyle.MODERN_BENTO) {
     return (
-      <div className="group relative flex flex-col p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-400 hover:shadow-lg transition-all cursor-grab active:cursor-grabbing">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${colorMap[node.color]}`}>
+      <div className="group relative flex flex-col p-4 bg-white border border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-grab active:cursor-grabbing overflow-hidden">
+        {/* Top-Right Decorative/Functional area */}
+        <div className="absolute top-3 right-3 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all transform translate-y-1 group-hover:translate-y-0">
+          <button className="p-1.5 bg-slate-50 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
+            <Star className="w-3.5 h-3.5" />
+          </button>
+          <button className="p-1.5 bg-blue-600 text-white hover:bg-blue-700 rounded-lg shadow-md shadow-blue-100 transition-colors">
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Floating Label for New items */}
+        {node.isNew && !node.isAi && (
+          <div className="absolute top-3 right-3 px-2 py-0.5 bg-red-500 text-[10px] text-white font-black rounded-full shadow-lg transform rotate-6 z-10 group-hover:hidden">NEW</div>
+        )}
+
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 shadow-sm border ${colorMap[node.color]}`}>
           {getIcon(node.icon, 'w-6 h-6')}
         </div>
-        <div className="flex items-center gap-1.5 mb-1">
-          <span className="text-sm font-semibold text-slate-800 line-clamp-1">{node.name}</span>
-          {node.isAi && <Sparkles className="w-3.5 h-3.5 text-blue-500 fill-blue-100" />}
+
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <span className="text-[15px] font-bold text-slate-800 line-clamp-1">{node.name}</span>
+          {node.isAi && (
+            <div className="flex items-center px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded-md gap-1">
+              <Sparkles className="w-2.5 h-2.5 fill-blue-500" />
+              <span className="text-[9px] font-black uppercase">AI</span>
+            </div>
+          )}
         </div>
-        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+
+        <p className="text-[12px] text-slate-500 leading-relaxed line-clamp-2 min-h-[36px]">
           {node.description}
         </p>
-        {node.isNew && (
-          <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-red-500 text-[10px] text-white font-bold rounded-full transform rotate-12 shadow-sm">NEW</span>
-        )}
+
+        {/* Footer info to fill space */}
+        <div className="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between">
+          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${tagColorMap[node.color]}`}>
+            {node.category}
+          </span>
+          <span className="text-[10px] text-slate-300 font-medium">Drag to add</span>
+        </div>
       </div>
     );
   }
